@@ -1,0 +1,90 @@
+name: RawNet2
+n_gpu: 1
+
+arch:
+  type: RawNet2
+  args:
+    in_channels_list: [20, 20, 20, 128, 128, 128]
+    out_channels_list: [20, 20, 128, 128, 128, 128]
+    take_abs: False
+
+loss:
+  type: CrossEntropyLoss
+  args:
+    weights: [1., 9.]
+
+data:
+  train:
+    batch_size: 128
+    num_workers: 4
+    datasets:
+      - type: LADataset
+        args:
+          wav_dir: data/LA/ASVspoof2019_LA_train/flac
+          txt_path: data/LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.train.trn.txt
+          use_buffer: True
+          type: "RN"
+
+          # type: "LFCC"
+#      - type: LADataset
+#        args:
+#          max_len: 124
+#          wav_dir: data/LA/ASVspoof2019_LA_dev/flac
+#          txt_path: data/LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.dev.trl.txt
+#          use_buffer: False
+#          type: "STFT"
+
+  test:
+    batch_size: 128
+    num_workers: 4
+    datasets:
+      - type: LADataset
+        args:
+          wav_dir: data/LA/ASVspoof2019_LA_eval/flac
+          txt_path: data/LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.eval.trl.txt
+          type: "RN"
+
+
+optimizer:
+  type: AdamW
+  args:
+    lr: 4e-4  # 4 times higher cause bs 4 times higher
+    weight_decay: 1e-4
+
+lr_scheduler:
+  type: ExponentialLR
+  args:
+    gamma: 0.95
+
+metrics:
+  - loss
+  - grad_norm
+  - accuracy
+  - roc_auc
+  - eer
+
+trainer:
+  epochs: 50
+  save_dir: saved/
+  save_period: 10
+  verbosity: 2
+  visualize: wandb
+  wandb_project: as_project
+  grad_norm_clip: null
+  grad_max_abs: null
+  mixed_precision: true
+  eval_interval: 1
+
+resume: null
+
+device: cuda
+
+hydra:
+  run:
+    dir: .
+
+test_settings:
+  sample_rate: 16000
+  out_dir: "final_results"
+  mel_dir: null
+  audio_dir: "test_data"
