@@ -43,6 +43,7 @@ class SincConv_fast(nn.Module):
         take_abs=True,
         in_channels=1,
         stride=1,
+        freeze=False,
         padding=0,
         dilation=1,
         bias=False,
@@ -79,7 +80,7 @@ class SincConv_fast(nn.Module):
         self.min_low_hz = min_low_hz
         self.min_band_hz = min_band_hz
 
-        low_hz = 1e-10
+        low_hz = self.min_low_hz + 1e-10
         high_hz = self.sample_rate / 2 - (self.min_low_hz + self.min_band_hz)
 
         mel = np.linspace(
@@ -89,8 +90,12 @@ class SincConv_fast(nn.Module):
         )
         hz = self.to_hz(mel)
 
-        self.low_hz_ = nn.Parameter(torch.Tensor(hz[:-1]).view(-1, 1))
-        self.band_hz_ = nn.Parameter(torch.Tensor(np.diff(hz)).view(-1, 1))
+        self.low_hz_ = nn.Parameter(
+            torch.Tensor(hz[:-1]).view(-1, 1), requires_grad=not freeze
+        )
+        self.band_hz_ = nn.Parameter(
+            torch.Tensor(np.diff(hz)).view(-1, 1), requires_grad=not freeze
+        )
 
         n_lin = torch.linspace(
             0, (self.kernel_size / 2) - 1, steps=int((self.kernel_size / 2))
@@ -205,6 +210,7 @@ class RawNet2(nn.Module):
         out_channels_list: list[int],
         sinc_filter_size=1024,
         take_abs=True,
+        freeze=False,
         min_low_hz=0,
         min_band_hz=0,
         gru_num_layers=3,
@@ -219,6 +225,7 @@ class RawNet2(nn.Module):
                 out_channels=first_channels,
                 kernel_size=sinc_filter_size,
                 s3=s3,
+                freeze=freeze,
                 take_abs=take_abs,
                 min_low_hz=min_low_hz,
                 min_band_hz=min_band_hz,

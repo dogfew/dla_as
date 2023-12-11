@@ -19,7 +19,8 @@ from src.base import BaseTrainer
 from src.logger.utils import plot_spectrogram_to_buf
 from src.utils import (
     inf_loop,
-    MetricTracker, ROOT_PATH,
+    MetricTracker,
+    ROOT_PATH,
 )
 from src.utils import optional_autocast
 from src.utils.eer import compute_eer
@@ -265,16 +266,15 @@ class Trainer(BaseTrainer):
         dirpath = ROOT_PATH / "test_data"
 
         for audio_file in os.listdir(dirpath):
-            if audio_file.endswith('.flac') or audio_file.endswith('.wav'):
+            if audio_file.endswith(".flac") or audio_file.endswith(".wav"):
                 audio, _ = librosa.load(dirpath / audio_file, sr=16_000)
                 audio_tensor = torch.tensor(audio, device=self.device)
-                out = self.model(audio_tensor.unsqueeze(dim=0))['logits']
+                out = self.model(audio_tensor.unsqueeze(dim=0))["logits"]
                 prob_real = torch.softmax(out, dim=1)[:, 1].flatten()[0].item()
-                print(prob_real)
                 rows[audio_file] = {
                     "audio_name": audio_file,
                     "audio": wandb.Audio(audio, sample_rate=16_000),
-                    "prob_real": prob_real
+                    "prob_real": prob_real,
                 }
         self.writer.add_table(
             "predictions", pd.DataFrame.from_dict(rows, orient="index")
@@ -330,6 +330,11 @@ class Trainer(BaseTrainer):
             # np.save("other.npy", all_probs[all_targets == 0])
         except ValueError as e:
             print(e)
+            self.evaluation_metrics.update(
+                "roc_auc",
+                np.nan,
+            )
+            self.evaluation_metrics.update("eer", np.nan)
         if self.writer is not None:
             for name, p in self.model.named_parameters():
                 self.writer.add_histogram(name, p, bins="auto")

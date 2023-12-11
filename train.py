@@ -11,10 +11,6 @@ from src.utils.parse_config import ConfigParser
 import random
 import hydra
 
-import torch._dynamo
-
-torch._dynamo.config.suppress_errors = True
-
 warnings.filterwarnings("ignore", category=UserWarning)
 
 # fix random seeds for reproducibility

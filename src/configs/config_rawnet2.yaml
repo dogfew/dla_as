@@ -72,7 +72,7 @@ trainer:
   wandb_project: as_project
   grad_norm_clip: null
   grad_max_abs: null
-  mixed_precision: true
+  mixed_precision: True
   eval_interval: 1
 
 resume: null
