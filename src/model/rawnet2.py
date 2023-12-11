@@ -262,19 +262,3 @@ class RawNet2(nn.Module):
         x, _ = self.gru(x)
         x = self.fc(x[:, -1, :])
         return {"logits": x}
-
-
-if __name__ == "__main__":
-    torch.manual_seed(124)
-    net = RawNet2(
-        in_channels_list=[20, 20, 20, 128, 128, 128],
-        out_channels_list=[20, 20, 128, 128, 128, 128],
-    )
-    # for p in net.parameters():
-    #     if p.requires_grad:
-    #         print(p.numel())
-
-    print(sum(p.numel() for p in net.parameters() if p.requires_grad))
-    inp = torch.randn((4, 64_000), dtype=torch.float32)
-    print(net(inp))
-# print(net)

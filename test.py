@@ -2,7 +2,9 @@ import os
 import warnings
 
 import hydra
+import librosa
 import numpy as np
+import pandas as pd
 import torch
 import torchaudio
 from tqdm import tqdm
@@ -16,14 +18,14 @@ from src.utils.parse_config import ConfigParser
 
 warnings.filterwarnings("ignore")
 
-DEFAULT_CHECKPOINT_PATH = ROOT_PATH / "default_test_model" / "checkpoint.pth"
 
 SEED = 123
 torch.manual_seed(SEED)
 torch.backends.cudnn.deterministic = True
 
 
-@hydra.main(config_path="src/configs", config_name="config.yaml")
+@torch.no_grad()
+@hydra.main(config_path="src/configs", config_name="config_rawnet2.yaml")
 def main(config):
     config = ConfigParser(config)
     logger = config.get_logger("test")
@@ -42,7 +44,6 @@ def main(config):
     model = model.to(device)
     model.eval()
     args = config["test_settings"]
-    output_dir = args.out_dir
     dataloaders = get_dataloaders(config)
     with torch.no_grad():
         for test_type in ['test']:
@@ -60,8 +61,20 @@ def main(config):
                 bonafide_scores=all_probs[all_targets == 1],
                 other_scores=all_probs[all_targets == 0])
             print(f"EER:   {eer}\nThres: {thres}")
-
-
+    rows = {}
+    dirpath = ROOT_PATH / args['audio_dir']
+    for audio_file in os.listdir(dirpath):
+        if audio_file.endswith('.flac') or audio_file.endswith('.wav'):
+            audio, _ = librosa.load(dirpath / audio_file, sr=16_000)
+            audio_tensor = torch.tensor(audio, device=device)
+            out = model(audio_tensor.unsqueeze(dim=0))['logits']
+            prob_fake, prob_real = torch.softmax(out, dim=1).flatten().cpu().tolist()
+            rows[audio_file] = {
+                "audio_name": audio_file,
+                "prob_real": prob_real,
+                "prob_fake": prob_fake
+            }
+    print(pd.DataFrame.from_dict(rows, orient="index").reset_index(drop=True))
 
 
 if __name__ == "__main__":

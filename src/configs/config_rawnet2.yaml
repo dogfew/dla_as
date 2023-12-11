@@ -22,7 +22,7 @@ data:
         args:
           wav_dir: data/LA/ASVspoof2019_LA_train/flac
           txt_path: data/LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.train.trn.txt
-          use_buffer: True
+          use_buffer: False
           type: "RN"
 
           # type: "LFCC"
@@ -86,5 +86,4 @@ hydra:
 test_settings:
   sample_rate: 16000
   out_dir: "final_results"
-  mel_dir: null
   audio_dir: "test_data"

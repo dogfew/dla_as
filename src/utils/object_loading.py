@@ -16,7 +16,6 @@ def get_dataloaders(configs):
     for split, params in configs["data"].items():
         num_workers = params.get("num_workers", 1)
 
-        # set train augmentations
         if split == "train":
             drop_last = True
             shuffle = True
@@ -24,7 +23,6 @@ def get_dataloaders(configs):
             drop_last = False
             shuffle = False
 
-        # create and join datasets
         datasets = []
         for ds in params["datasets"]:
             datasets.append(
@@ -40,7 +38,6 @@ def get_dataloaders(configs):
         else:
             dataset = datasets[0]
 
-        # select batch size or batch sampler
         assert xor(
             "batch_size" in params,
             "batch_sampler" in params,
@@ -50,12 +47,9 @@ def get_dataloaders(configs):
             batch_sampler = None
         else:
             raise Exception()
-        # Fun fact. An hour of debugging was wasted to write this line
         assert bs <= len(
             dataset
         ), f"Batch size ({bs}) shouldn't be larger than dataset length ({len(dataset)})"
-        # create dataloader
-        print(split, shuffle)
         if batch_sampler is None:
             dataloader = DataLoader(
                 dataset,

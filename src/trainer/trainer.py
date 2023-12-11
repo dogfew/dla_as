@@ -253,6 +253,7 @@ class Trainer(BaseTrainer):
             100.0 * current / total,
         )
 
+    @torch.no_grad()
     def _log_predictions(
         self,
         *args,
@@ -262,13 +263,18 @@ class Trainer(BaseTrainer):
             return
         rows = {}
         dirpath = ROOT_PATH / "test_data"
+
         for audio_file in os.listdir(dirpath):
             if audio_file.endswith('.flac') or audio_file.endswith('.wav'):
-                audio, _ = librosa.load(audio_file, sr=16_000)
+                audio, _ = librosa.load(dirpath / audio_file, sr=16_000)
                 audio_tensor = torch.tensor(audio, device=self.device)
+                out = self.model(audio_tensor.unsqueeze(dim=0))['logits']
+                prob_real = torch.softmax(out, dim=1)[:, 1].flatten()[0].item()
+                print(prob_real)
                 rows[audio_file] = {
-                    "audio": wandb.Audio(dirpath / audio_file),
-                    "prob_real": self.model(audio_tensor.unsqueeze(dim=0))
+                    "audio_name": audio_file,
+                    "audio": wandb.Audio(audio, sample_rate=16_000),
+                    "prob_real": prob_real
                 }
         self.writer.add_table(
             "predictions", pd.DataFrame.from_dict(rows, orient="index")

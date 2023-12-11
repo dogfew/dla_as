@@ -143,17 +143,3 @@ class LADataset(Dataset):
             "target": int(entry["type"] == "bonafide"),
             "mel": mel,
         }
-
-
-if __name__ == "__main__":
-    dataset = LADataset(
-        wav_dir="/home/vladimir/PycharmProjects/NV/data/"
-        "LA/ASVspoof2019_LA_train/flac",
-        txt_path="/home/vladimir/PycharmProjects/NV/data/"
-        "LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.train.trn.txt",
-        type="STFT",
-    )
-    print(len(dataset))
-    print(dataset[2334]["mel"].shape)
-    print(dataset[554]["mel"].shape)
-    print(dataset[-1]["mel"].shape)
