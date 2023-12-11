@@ -1,7 +1,7 @@
 import torch
+from sklearn.metrics import accuracy_score
 from torch import Tensor
 from torch.nn import CrossEntropyLoss
-from sklearn.metrics import roc_auc_score, accuracy_score
 
 
 class CrossEntropyLossWrapper(CrossEntropyLoss):

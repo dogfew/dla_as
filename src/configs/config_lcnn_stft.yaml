@@ -22,7 +22,6 @@ data:
           wav_dir: data/LA/ASVspoof2019_LA_train/flac
           txt_path: data/LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.train.trn.txt
           use_buffer: False
-         # type: "LFCC"
 
   test:
     batch_size: 64
@@ -33,7 +32,6 @@ data:
           max_len: 124
           wav_dir: data/LA/ASVspoof2019_LA_eval/flac
           txt_path: data/LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.eval.trl.txt
-        #  type: "LFCC"
 
 
 optimizer:

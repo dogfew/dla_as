@@ -16,7 +16,7 @@ class MaxFeatureMap(nn.Module):
 
 
 class LightCNN(nn.Module):
-    def __init__(self, first_dim=180, second_dim=600, sr=16_000):
+    def __init__(self, first_dim=180, second_dim=600, use_dropout=True):
         # 180x600
         # 863x124
         super().__init__()
@@ -39,7 +39,7 @@ class LightCNN(nn.Module):
             *self._create_layer(32, 64, 3, batch_norm=False),
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.Flatten(),
-            nn.Dropout(0.75),
+            nn.Dropout(0.75) if use_dropout else nn.Identity(),
             nn.Linear((first_dim // 16) * (second_dim // 16) * 32, 160),
             MaxFeatureMap(80),
             nn.BatchNorm1d(80),

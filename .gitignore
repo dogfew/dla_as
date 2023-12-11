@@ -100,7 +100,7 @@ ENV/
 # mypy
 .mypy_cache/
 
-# input data, saved log, checkpoints
+# logits data, saved log, checkpoints
 input/
 language_models/
 saved/

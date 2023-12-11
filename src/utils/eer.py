@@ -178,7 +178,7 @@ def compute_tDCF(
 
     where CM stands for countermeasure and ASV for automatic speaker
     verification. The CM is therefore used as a 'gate' to decided whether or
-    not the input speech sample should be passed onwards to the ASV system.
+    not the logits speech sample should be passed onwards to the ASV system.
     Generally, both CM and ASV can do detection errors. Not all those errors
     are necessarily equally cost, and not all types of users are necessarily
     equally likely. The tandem t-DCF gives a principled with to compare

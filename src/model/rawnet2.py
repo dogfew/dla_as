@@ -10,7 +10,7 @@ class SincConv_fast(nn.Module):
     Parameters
     ----------
     in_channels : `int`
-        Number of input channels. Must be 1.
+        Number of logits channels. Must be 1.
     out_channels : `int`
         Number of filters.
     kernel_size : `int`
@@ -56,7 +56,7 @@ class SincConv_fast(nn.Module):
 
         if in_channels != 1:
             msg = (
-                "SincConv only support one input channel (here, in_channels = {%i})"
+                "SincConv only support one logits channel (here, in_channels = {%i})"
                 % (in_channels)
             )
             raise ValueError(msg)
