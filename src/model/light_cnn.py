@@ -78,3 +78,19 @@ def format_number(num):
     else:
         formatted = str(num)
     return formatted
+
+
+
+if __name__ == "__main__":
+    torch.manual_seed(123)
+    net = LightCNN(60, 600)
+    net.eval()
+    inp = torch.randn(1, 60, 600)
+    # total = 0
+    # for layer in net.layers:
+    #     params_num = sum(p.numel() for p in layer.parameters())
+    #     total += params_num
+    #     print(format_number(params_num))
+    # print("Total: ", format_number(total))
+    out = net(inp)
+    print(net.__class__.__name__)

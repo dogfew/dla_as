@@ -13,7 +13,7 @@ loss:
 
 data:
   train:
-    batch_size: 128
+    batch_size: 64
     num_workers: 4
     datasets:
       - type: LADataset
@@ -60,7 +60,7 @@ trainer:
   wandb_project: as_project
   grad_norm_clip: null
   grad_max_abs: null
-  mixed_precision: true
+  mixed_precision: false
   eval_interval: 1
   #len_epoch: 400
 

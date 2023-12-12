@@ -56,12 +56,12 @@ class LADataset(Dataset):
         self.transform = self._create_transform(sr, type)
 
         self.buffer = []
+        self.type = type
         if use_buffer:
             if type in ["STFT", "LFCC"]:
                 self.buffer = [self._process_audio(entry) for entry in self.protocols]
             else:
                 self.buffer = [self._just_load_audio(entry) for entry in self.protocols]
-        self.type = type
 
     def __len__(self):
         return len(self.protocols)

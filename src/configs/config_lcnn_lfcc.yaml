@@ -4,8 +4,8 @@ n_gpu: 1
 arch:
   type: LightCNN
   args:
-    first_dim: 863
-    second_dim: 124
+    first_dim: 180
+    second_dim: 600
 
 loss:
   type: CrossEntropyLoss
@@ -13,16 +13,16 @@ loss:
 
 data:
   train:
-    batch_size: 128
+    batch_size: 64
     num_workers: 4
     datasets:
       - type: LADataset
         args:
-          max_len: 124
+          max_len: 600
           wav_dir: data/LA/ASVspoof2019_LA_train/flac
           txt_path: data/LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.train.trn.txt
           use_buffer: False
-         # type: "LFCC"
+          type: "LFCC"
 
   test:
     batch_size: 64
@@ -30,10 +30,10 @@ data:
     datasets:
       - type: LADataset
         args:
-          max_len: 124
+          max_len: 600
           wav_dir: data/LA/ASVspoof2019_LA_eval/flac
           txt_path: data/LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.eval.trl.txt
-        #  type: "LFCC"
+          type: "LFCC"
 
 
 optimizer:
@@ -62,9 +62,8 @@ trainer:
   wandb_project: as_project
   grad_norm_clip: null
   grad_max_abs: null
-  mixed_precision: true
+  mixed_precision: false
   eval_interval: 1
-  #len_epoch: 400
 
 resume: null
 

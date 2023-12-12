@@ -1,6 +1,8 @@
+import os
 import warnings
 import numpy as np
 import torch
+from omegaconf import OmegaConf
 
 import src.loss as module_loss
 import src.model as module_arch
@@ -26,7 +28,6 @@ np.random.seed(SEED)
 def main(cfg):
     config = ConfigParser(cfg)
     logger = config.get_logger("train")
-    # torch.autograd.set_detect_anomaly(True)
     print(
         f"Running training.\n"
         f"Deterministic: {torch.are_deterministic_algorithms_enabled()}"

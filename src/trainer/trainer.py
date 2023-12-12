@@ -53,10 +53,10 @@ class Trainer(BaseTrainer):
         )
         self.skip_oom = skip_oom
         self.train_dataloader = dataloaders["train"]
+        self.dataset = self.train_dataloader.dataset
         self.evaluation_dataloaders = {
             k: v for k, v in dataloaders.items() if k != "train"
         }
-        print(self.evaluation_dataloaders)
         self.config = config
         if len_epoch is None:
             self.len_epoch = len(self.train_dataloader)
@@ -183,28 +183,6 @@ class Trainer(BaseTrainer):
                 self.optimizer.state_dict()["param_groups"][0]["lr"],
             )
             self.writer.add_scalar("scaler factor", self.scaler.get_scale())
-
-            # audio_generator_example = (
-            #     batch["wave_fake_detached"][0]
-            #     .detach()
-            #     .cpu()
-            #     .to(torch.float32)
-            #     .numpy()
-            #     .flatten()
-            # )
-            # audio_true_example = (
-            #     batch["wave_true"][0].detach().cpu().to(torch.float32).numpy().flatten()
-            # )
-            # self.writer.add_audio(
-            #     "generated",
-            #     audio_generator_example,
-            #     sample_rate=22050,
-            # )
-            # self.writer.add_audio(
-            #     "true",
-            #     audio_true_example,
-            #     sample_rate=22050,
-            # )
         return last_train_metrics
 
     def process_batch(
@@ -264,18 +242,27 @@ class Trainer(BaseTrainer):
             return
         rows = {}
         dirpath = ROOT_PATH / "test_data"
-
+        self.model.eval()
+        self.criterion.eval()
         for audio_file in os.listdir(dirpath):
             if audio_file.endswith(".flac") or audio_file.endswith(".wav"):
                 audio, _ = librosa.load(dirpath / audio_file, sr=16_000)
-                audio_tensor = torch.tensor(audio, device=self.device)
-                out = self.model(audio_tensor.unsqueeze(dim=0))["logits"]
-                prob_real = torch.softmax(out, dim=1)[:, 1].flatten()[0].item()
-                rows[audio_file] = {
-                    "audio_name": audio_file,
-                    "audio": wandb.Audio(audio, sample_rate=16_000),
-                    "prob_real": prob_real,
-                }
+                if self.model.__class__.__name__ == "LightCNN":
+                    audio_tensor = self.dataset._process_audio({
+                        "path": dirpath / audio_file,
+                        "type": ""
+                    })['mel'].to(self.device)
+                else:
+                    audio, _ = librosa.load(dirpath / audio_file, sr=16_000)
+                    audio_tensor = torch.tensor(audio, device=self.device)
+                with optional_autocast(self.mixed_precision):
+                    out = self.model(audio_tensor.unsqueeze(dim=0))["logits"]
+                    prob_real = torch.softmax(out, dim=1)[:, 1].flatten()[0].item()
+                    rows[audio_file] = {
+                        "audio_name": audio_file,
+                        "audio": wandb.Audio(audio, sample_rate=16_000),
+                        "prob_real": prob_real,
+                    }
         self.writer.add_table(
             "predictions", pd.DataFrame.from_dict(rows, orient="index")
         )
@@ -288,6 +275,7 @@ class Trainer(BaseTrainer):
         :return: A log that contains information about validation
         """
         self.model.eval()
+        self.criterion.eval()
         self.evaluation_metrics.reset()
         all_probs = []
         all_targets = []
@@ -340,8 +328,8 @@ class Trainer(BaseTrainer):
                 self.writer.add_histogram(name, p, bins="auto")
         self._log_scalars(self.evaluation_metrics, test=True)
         self._log_spectrogram(batch, "test")
-        result = self.evaluation_metrics.result()
         self._log_predictions()
+        result = self.evaluation_metrics.result()
         return result
 
     @staticmethod
