@@ -15,7 +15,9 @@ pip install -r requirements.txt
 pip install gdown>4.7
 mkdir -p default_test_model
 cd default_test_model
-gdown 13X8Y8UNIdLIg7M7E817a_YHrDZx8xeZs -O checkpoint.pth
+gdown 1UBJKIAn_ibl9UH7WmKzYpEphFkdz6V0z -O lcnn-lfcc-10.pth
+gdown 191cPrwnaGGu6Vz8-fEjr3U8NO3wkbSCt -O rawnet2-s3-50.pth
+gdown 1acqZie5JlQuJr7axjwzbC2Q8o-yRgYED -O rawnet2-s1.50.pth
 cd ..
 ```
 
@@ -47,11 +49,11 @@ pip install -r requirements.txt
 bash prep_script.sh
 ```
 
-To reproduce my final model, train Hi-Fi GAN. Config path: `src/configs/config.yaml`: 
+To reproduce my final RawNet2 model, train: `src/configs/config_rawnet2.yaml`: 
 ```shell
 python train.py
 ```
-
-**Optional Tasks:**
-
-- (up to +1) for Hydra. There were major changes in `src/utils/parse_config.py`, `train.py` and `test.py` files
+If you want to reproduce LCNN, train: `src/configs/config_lcnn_lfcc.yaml`:
+```shell
+python train.py --config-name="config_lcnn_lfcc.yaml"
+```
