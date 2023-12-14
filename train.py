@@ -65,9 +65,7 @@ def main(cfg):
         dataloaders=dataloaders,
         scheduler=lr_scheduler,
         len_epoch=config["trainer"].get("len_epoch", None),
-        eval_interval=config["trainer"].get(
-            "eval_interval", 1
-        ),
+        eval_interval=config["trainer"].get("eval_interval", 1),
         mixed_precision=config["trainer"].get("mixed_precision", True),
     )
 

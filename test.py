@@ -45,10 +45,10 @@ def main(config):
     model.eval()
     args = config["test_settings"]
     dataloaders = get_dataloaders(config)
-    dataset = dataloaders['test'].dataset
+    dataset = dataloaders["test"].dataset
     with torch.no_grad():
-        for test_type in ['test']:
-            if args['skip_test']:
+        for test_type in ["test"]:
+            if args["skip_test"]:
                 print("Skipping test!")
                 continue
             all_probs = []
@@ -56,36 +56,36 @@ def main(config):
             for batch_num, batch in enumerate(tqdm(dataloaders[test_type])):
                 batch = Trainer.move_batch_to_device(batch, device)
                 batch.update(model(**batch))
-                all_probs.extend(batch['logits'][:, 1].detach().cpu().tolist())
-                all_targets.extend(batch['targets'].detach().cpu().tolist())
+                all_probs.extend(batch["logits"][:, 1].detach().cpu().tolist())
+                all_targets.extend(batch["targets"].detach().cpu().tolist())
 
             all_probs = np.array(all_probs)
             all_targets = np.array(all_targets)
             eer, thres = compute_eer(
                 bonafide_scores=all_probs[all_targets == 1],
-                other_scores=all_probs[all_targets == 0])
+                other_scores=all_probs[all_targets == 0],
+            )
             print(f"EER:   {eer}\nThres: {thres}")
     rows = {}
-    dirpath = ROOT_PATH / args['audio_dir']
+    dirpath = ROOT_PATH / args["audio_dir"]
     if not os.path.exists(dirpath):
         return
     for audio_file in os.listdir(dirpath):
-        if audio_file.endswith('.flac') or audio_file.endswith('.wav'):
+        if audio_file.endswith(".flac") or audio_file.endswith(".wav"):
             audio, _ = librosa.load(dirpath / audio_file, sr=16_000)
             if model.__class__.__name__ == "LightCNN":
-                audio_tensor = dataset._process_audio({
-                    "path": dirpath / audio_file,
-                    "type": ""
-                })['mel'].to(device)
+                audio_tensor = dataset._process_audio(
+                    {"path": dirpath / audio_file, "type": ""}
+                )["mel"].to(device)
             else:
                 audio, _ = librosa.load(dirpath / audio_file, sr=16_000)
                 audio_tensor = torch.tensor(audio, device=device)
-            out = model(audio_tensor.unsqueeze(dim=0))['logits']
+            out = model(audio_tensor.unsqueeze(dim=0))["logits"]
             prob_fake, prob_real = torch.softmax(out, dim=1).flatten().cpu().tolist()
             rows[audio_file] = {
                 "audio_name": audio_file,
                 "prob_real": prob_real,
-                "prob_fake": prob_fake
+                "prob_fake": prob_fake,
             }
     else:
         print(pd.DataFrame.from_dict(rows, orient="index").reset_index(drop=True))

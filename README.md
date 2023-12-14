@@ -29,10 +29,10 @@ cd ..
 
 If you want to check my LCNN-LFCC model: 
 ```shell
- python test.py --config-name="config_lcnn_lfcc.yaml" +resume="default_test_model/lcnn-lfcc-10.pth" test_settings.skip_test=True
+ python test.py --config-name="config_lcnn_lfcc.yaml" +resume="default_test_model/lcnn-lfcc-10.pth" test_settings.skip_test=False
 ```
 
-If you want to check RawNet2-S1. ()
+If you want to check RawNet2-S1. 
 ```shell
 python test.py +resume="default_test_model/rawnet2-s1-50.pth" test_settings.skip_test=True
 ```
