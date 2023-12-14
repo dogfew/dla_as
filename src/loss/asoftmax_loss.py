@@ -21,10 +21,11 @@ class AngularSoftmax(nn.Module):
         cosine = x @ W.T
         numerator = torch.cos(
             torch.acos(
-                torch.diagonal(
-                    cosine.transpose(0, 1)[targets]
-                               ).clamp(-1. + self.eps, 1. - self.eps)
-            ) * self.margin
+                torch.diagonal(cosine.transpose(0, 1)[targets]).clamp(
+                    -1.0 + self.eps, 1.0 - self.eps
+                )
+            )
+            * self.margin
         )
         mask = torch.ones_like(cosine, dtype=torch.bool).scatter_(
             1, targets.unsqueeze(1), False

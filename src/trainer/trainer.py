@@ -248,10 +248,9 @@ class Trainer(BaseTrainer):
             if audio_file.endswith(".flac") or audio_file.endswith(".wav"):
                 audio, _ = librosa.load(dirpath / audio_file, sr=16_000)
                 if self.model.__class__.__name__ == "LightCNN":
-                    audio_tensor = self.dataset._process_audio({
-                        "path": dirpath / audio_file,
-                        "type": ""
-                    })['mel'].to(self.device)
+                    audio_tensor = self.dataset._process_audio(
+                        {"path": dirpath / audio_file, "type": ""}
+                    )["mel"].to(self.device)
                 else:
                     audio, _ = librosa.load(dirpath / audio_file, sr=16_000)
                     audio_tensor = torch.tensor(audio, device=self.device)
