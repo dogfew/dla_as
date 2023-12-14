@@ -74,5 +74,5 @@ hydra:
 
 test_settings:
   sample_rate: 16000
-  out_dir: "final_results"
+  skip_test: true
   audio_dir: "test_data"

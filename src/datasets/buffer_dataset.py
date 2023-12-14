@@ -52,7 +52,11 @@ class LADataset(Dataset):
         self.max_length = max_len
         self.max_audio_len = max_audio_len
 
-        self.protocols = self._load_protocols(txt_path)
+        try:
+            self.protocols = self._load_protocols(txt_path)
+        except Exception as e:
+            print(e)
+            self.protocols = None
         self.transform = self._create_transform(sr, type)
 
         self.buffer = []

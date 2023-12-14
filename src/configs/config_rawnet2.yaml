@@ -25,15 +25,6 @@ data:
           use_buffer: False
           type: "RN"
 
-          # type: "LFCC"
-#      - type: LADataset
-#        args:
-#          max_len: 124
-#          wav_dir: data/LA/ASVspoof2019_LA_dev/flac
-#          txt_path: data/LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.dev.trl.txt
-#          use_buffer: False
-#          type: "STFT"
-
   test:
     batch_size: 128
     num_workers: 4
@@ -85,5 +76,5 @@ hydra:
 
 test_settings:
   sample_rate: 16000
-  out_dir: "final_results"
+  skip_test: true
   audio_dir: "test_data"

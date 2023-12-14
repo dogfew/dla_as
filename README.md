@@ -19,18 +19,25 @@ gdown 13X8Y8UNIdLIg7M7E817a_YHrDZx8xeZs -O checkpoint.pth
 cd ..
 ```
 
-## Speech synthesis
+## Test
 
 ### Generate sentences required in task
-You can just run this script and check audios in `final_results/`
-If you have ready audios, run: 
+
+
+
+If you want to check my LCNN-LFCC model: 
 ```shell
-python test.py +resume="default_test_model/checkpoint.pth" test_settings.out_dir="final_results" test_settings.audio_dir="test_data"
+ python test.py --config-name="config_lcnn_lfcc.yaml" +resume="default_test_model/lcnn-lfcc-10.pth" test_settings.skip_test=True
 ```
 
-If you have ready mels in `.npy` format: 
-```shell 
-python test.py +resume="default_test_model/checkpoint.pth" test_settings.out_dir="final_results" test_settings.mel_dir="mel_test_data"
+If you want to check RawNet2-S1. ()
+```shell
+python test.py +resume="default_test_model/rawnet2-s1-50.pth" test_settings.skip_test=True
+```
+
+If you want to check RawNet2-S3. (You can skip test for example)
+```shell
+python test.py +resume="default_test_model/rawnet2-s3-50.pth" test_settings.skip_test=True test_settings.audio_dir="test_data"
 ```
 
 ## Training
