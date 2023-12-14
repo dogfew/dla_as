@@ -56,7 +56,7 @@ class LADataset(Dataset):
             self.protocols = self._load_protocols(txt_path)
         except Exception as e:
             print(e)
-            self.protocols = None
+            self.protocols = []
         self.transform = self._create_transform(sr, type)
 
         self.buffer = []
