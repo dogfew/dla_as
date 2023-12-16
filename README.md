@@ -26,6 +26,8 @@ python test.py +resume="default_test_model/rawnet2-s1-50.pth" ++data.test.datase
 ```
 ## Test
 
+You will get metrics for test part of dataset and also probabilities for files in audio_dir (`test_settings.audio_dir="test_data"`)
+
 ### LCNN-lFCC
 
 If you want to check my LCNN-LFCC model: 
