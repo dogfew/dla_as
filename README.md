@@ -36,13 +36,13 @@ If you want to check my LCNN-LFCC model:
 ### RawNet2-S1
 If you want to check RawNet2-S1. 
 ```shell
-python test.py +resume="default_test_model/rawnet2-s1-50.pth" test_settings.skip_test=True
+python test.py +resume="default_test_model/rawnet2-s1-50.pth" test_settings.skip_test=False
 ```
 
 ### RawNet2-S3
 If you want to check RawNet2-S3. (You can skip test for example)
 ```shell
-python test.py +resume="default_test_model/rawnet2-s3-50.pth" test_settings.skip_test=True test_settings.audio_dir="test_data"
+python test.py +resume="default_test_model/rawnet2-s3-50.pth" test_settings.skip_test=False test_settings.audio_dir="test_data"
 ```
 
 ## Training
