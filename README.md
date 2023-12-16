@@ -17,7 +17,7 @@ The commands in file `prep_script.sh` are:
 bash prep_script.sh
 ```
 
-Otherwise, you have to specify protocols file and dir with audio. For example, to get results on train part of dataset with rawnet2-s3, you can run: 
+Otherwise, you have to specify protocols file and dir with audios. For example, to get results on train part of dataset with rawnet2-s3, you can run: 
 
 ```shell
 python test.py +resume="default_test_model/rawnet2-s3-50.pth" data.test.datasets.0.args.wav_dir="data/LA/ASVspoof2019_LA_train/flac" data.test.datasets.0.args.txt_path="data/LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.train.trn.txt" test_settings.skip_test=False
