@@ -18,9 +18,12 @@ bash prep_script.sh
 ```
 Otherwise, you have to specify protocols file and dir with audio: 
 ```shell
-python train.py data.test.datasets=0.wav_dir=data/LA/ASVspoof2019_LA_eval/flac data.test.datasets=0.txt_path=data/LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.eval.trl.txt
+python test.py +resume=<checkpoint.pth> ++data.test.datasets.0.wav_dir=<flac_dir> ++data.test.datasets.0.txt_path=<protocols.txt.file> test_settings.skip_test=False
 ```
-
+For example:
+```shell
+python test.py +resume="default_test_model/rawnet2-s1-50.pth" ++data.test.datasets.0.wav_dir=data/LA/ASVspoof2019_LA_eval/flac ++data.test.datasets.0.txt_path=data/LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.eval.trl.txt test_settings.skip_test=False
+```
 ## Test
 
 ### LCNN-lFCC
