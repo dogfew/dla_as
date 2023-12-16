@@ -47,9 +47,6 @@ def get_dataloaders(configs):
             batch_sampler = None
         else:
             raise Exception()
-        assert bs <= len(
-            dataset
-        ), f"Batch size ({bs}) shouldn't be larger than dataset length ({len(dataset)})"
         if batch_sampler is None:
             dataloader = DataLoader(
                 dataset,
