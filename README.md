@@ -16,6 +16,10 @@ The commands in file `prep_script.sh` are:
 ```shell
 bash prep_script.sh
 ```
+Otherwise, you have to specify this things: 
+```shell
+python train.py data.test.datasets=0.wav_dir=data/LA/ASVspoof2019_LA_eval/flac data.test.datasets=0.txt_path=data/LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.eval.trl.txt
+```
 
 ## Test
 
