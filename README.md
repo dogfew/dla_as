@@ -40,11 +40,26 @@ python test.py +resume="default_test_model/rawnet2-s1-50.pth" test_settings.skip
 ```
 
 ### RawNet2-S3
-If you want to check RawNet2-S3. (You can skip test for example)
+If you want to check RawNet2-S3. 
 ```shell
 python test.py +resume="default_test_model/rawnet2-s3-50.pth" test_settings.skip_test=False test_settings.audio_dir="test_data"
 ```
+### Inference on train or dev
 
+If you want to get metrics on train (or dev, if you change arguments) part of dataset, you can this commands:
+##### RawNet2-S1
+```shell
+python test.py +resume="default_test_model/rawnet2-s1-50.pth" data.test.datasets.0.args.wav_dir="data/LA/ASVspoof2019_LA_train/flac" data.test.datasets.0.args.txt_path="data/LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.train.trn.txt" test_settings.skip_test=False 
+```
+
+##### RawNet2-S3
+```shell
+python test.py +resume="default_test_model/rawnet2-s3-50.pth" data.test.datasets.0.args.wav_dir="data/LA/ASVspoof2019_LA_train/flac" data.test.datasets.0.args.txt_path="data/LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.train.trn.txt" test_settings.skip_test=False 
+```
+##### LFCC-LCNN
+```shell
+python test.py --config-name="config_lcnn_lfcc.yaml" +resume="default_test_model/lcnn-lfcc-10.pth"  data.test.datasets.0.args.wav_dir="data/LA/ASVspoof2019_LA_train/flac" data.test.datasets.0.args.txt_path="data/LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.train.trn.txt" test_settings.skip_test=False
+```
 ## Training
 To prepare data, run: 
 ```shell
@@ -59,4 +74,8 @@ python train.py
 If you want to reproduce LCNN, train: `src/configs/config_lcnn_lfcc.yaml`:
 ```shell
 python train.py --config-name="config_lcnn_lfcc.yaml"
+```
+If you want to reproduce RawNet2-S3 model, train: `src/configs/config_rawnet2.yaml` with s3 arguments:
+```shell
+python train.py +arch.args.s3=True trainer.mixed_precision=False
 ```
